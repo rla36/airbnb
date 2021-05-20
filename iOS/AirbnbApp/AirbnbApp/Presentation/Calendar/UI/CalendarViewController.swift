@@ -4,8 +4,8 @@ import FSCalendar
 class CalendarViewController: UIViewController {
     
     @IBOutlet var calendarView: FSCalendar!
-    private var startDay: Date?
-    private var endDay: Date?
+    private var checkIn: Date?
+    private var checkOut: Date?
     
     fileprivate let formatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -66,7 +66,8 @@ extension CalendarViewController: FSCalendarDelegate, FSCalendarDataSource {
             }
         }
         
-        
+        checkIn = calendar.selectedDates[0]
+        checkOut = calendar.selectedDates[1]
         
 //        var startTemp: Date!
 //        if calendar.selectedDates.count == 2 {
@@ -104,9 +105,4 @@ extension Date {
         let ret = Calendar.current.compare(self, to: Date(), toGranularity: .day)
         return ret == .orderedAscending
     }
-    
-    
 }
-
-
-

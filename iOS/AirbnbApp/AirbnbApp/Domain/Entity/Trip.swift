@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct Trip {
+    let imageURL: String
+    let themeTitle: String
+}

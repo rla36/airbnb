@@ -8,22 +8,43 @@
 import UIKit
 
 class MainViewController: UIViewController {
-
+    
+    private var collectionView: UICollectionView!
+    private var viewModel: MainViewModel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        viewModel = MainViewModel()
+        configureCollectionView()
+        //        congigureFetchData()
+        
+        let searchBarController = UISearchController(searchResultsController: nil)
+        searchBarController.searchBar.placeholder = "어디로 여행가세요?"
+        searchBarController.hidesNavigationBarDuringPresentation = false
+        
+        navigationItem.searchController = searchBarController
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func configureCollectionView() {
+        let layout = LayoutManager().createLayout()
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.backgroundColor = .systemBackground
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(collectionView)
     }
-    */
+    //        let layout = LayoutManager().createLayout()
+    
+    enum Section: Int, CaseIterable {
+        case heroImage
+        case place
+        case trip
+    }
 
+    //enum DataItem: Hashable {
+    //    case detailImages(Image)
+    //    case info(Detail)
+    //    case descriptionImages(Image)
+    //}
 }
+
+

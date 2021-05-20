@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+struct Place {
+    let location: String
+    let imageURL: String
+    let type: String
+    let time: Int
+}
