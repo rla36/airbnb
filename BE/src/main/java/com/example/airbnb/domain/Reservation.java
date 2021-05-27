@@ -14,5 +14,6 @@ public class Reservation {
     private LocalDate checkOutDate;
 
     private Guest guest;
+    private Long userId;
 }
 

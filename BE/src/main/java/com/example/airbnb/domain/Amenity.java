@@ -10,19 +10,19 @@ public class Amenity {
         AIR_CONDITIONING("에어컨"),
         HAIR_DRIER("헤어 드라이기");
 
-        private String amenityType;
+        private String amenityTypeKorean;
 
-        AmenityType(String amenityType) {
-            this.amenityType = amenityType;
+        AmenityType(String amenityTypeKorean) {
+            this.amenityTypeKorean = amenityTypeKorean;
         }
+
+        private String getAmenityTypeKorean() { return this.amenityTypeKorean; }
     }
 
     private AmenityType amenityType;
 
     @Override
     public String toString() {
-        return amenityType.toString();
+        return amenityType.getAmenityTypeKorean();
     }
-
-
 }
