@@ -29,6 +29,23 @@ create table theme_stay_content
     theme     bigint references theme (id)
 );
 
+
+drop table if exists stay;
+create table stay
+(
+    id              bigint auto_increment primary key,
+    image_url       varchar(500),
+    location        varchar(500),
+    category        varchar(100),
+    title           varchar(100),
+    description     varchar(500),
+    price_per_night int,
+    coordinate      double,
+
+    host_key int,
+    host_id         bigint references host (id)
+);
+
 drop table if exists host;
 create table host
 (
@@ -37,27 +54,6 @@ create table host
     image_url varchar(500)
 );
 
-drop table if exists stay;
-create table stay
-(
-    id          bigint auto_increment primary key,
-    image_url   varchar(500),
-    location    varchar(500),
-    category    varchar(100),
-    title       varchar(100),
-    description varchar(500),
-    coordinate  double,
-    host_id     bigint references host (id)
-);
-
-drop table if exists review;
-create table review
-(
-    id              bigint auto_increment primary key,
-    rating          double,
-    review_contents varchar(500),
-    `stay`          bigint references `stay` (id)
-);
 
 drop table if exists review;
 create table review
@@ -90,14 +86,24 @@ create table amenity
 );
 
 
+drop table if exists `user`;
+create table `user`
+(
+    id   bigint auto_increment primary key,
+    name varchar(50)
+);
+
 drop table if exists reservation;
 create table reservation
 (
+
     id             bigint auto_increment primary key,
     check_in_date  date,
     check_out_date date,
+
     stay_key       int,
-    stay           bigint references stay (id)
+    stay           bigint references stay (id),
+    user_id        bigint references `user` (id)
 );
 
 drop table if exists guest;
@@ -107,5 +113,13 @@ create table guest
     adult       int,
     child       int,
     infant      int,
-    reservation bigint references reservation (id)
+    `reservation` bigint references reservation (id)
+);
+
+drop table if exists wish;
+create table wish
+(
+    id   bigint auto_increment primary key,
+    stay bigint references stay (id),
+    user bigint references `user` (id)
 );
