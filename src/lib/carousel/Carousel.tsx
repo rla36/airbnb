@@ -1,41 +1,41 @@
-import React, {useRef } from "react";
-import { MESSAGE } from "./constant";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled, { css, keyframes } from "styled-components";
 import { HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
-import { Direction } from "./type";
-import { useCalendarDispatch, useCalendarState } from "./CalendarProvider";
+import {
+  useCalendarDispatch,
+  useConstantState,
+} from "../calendar/CalendarProvider";
+import { MESSAGE } from "../utils/constant";
+import { Direction } from "../utils/types";
 
 type CarouselProps = {
   children: React.ReactNode;
-  countOfItemToShow: number;
-  onClickHandler: (dir: Direction) => void;
 };
 
-export default function Carousel({
-  children,
-  countOfItemToShow,
-  onClickHandler,
-}: CarouselProps) {
-  const items = _createItems(children);
-  const state = useCalendarState();
-  const { x } = state;
-  const moving = useRef<boolean>(false);
+export default function Carousel({ children }: CarouselProps) {
+  const [x, setX] = useState(-1);
+  const items = useMemo(() => createItems(children), [children]);
+  const { countOfMonth } = useConstantState();
   const dispatch = useCalendarDispatch();
+  const moving = useRef<boolean>(false);
 
-  const onClickMove = (direction: Direction) => {
+  const onClickMove = useCallback((direction: Direction) => {
     if (moving.current) return;
     moving.current = true;
-    dispatch(
-      direction === -1
-        ? { type: "MOVE_LEFT", x: -2 }
-        : { type: "MOVE_RIGHT", x: 0 }
-    );
-    onClickHandler(direction);
-  };
 
-  const onAnimationEnd = () => {
+    if (direction === -1) {
+      setX(-2);
+      dispatch({ type: "MOVE_LEFT" });
+    } else {
+      setX(0);
+      dispatch({ type: "MOVE_RIGHT" });
+    }
+  }, []);
+
+  const onAnimationEnd = useCallback(() => {
     moving.current = false;
-  };
+    setX(-1);
+  }, []);
 
   const Slider = styled.div<{ x: number; count: number }>`
     width: 100%;
@@ -49,9 +49,9 @@ export default function Carousel({
   return (
     <CarouselWarpper>
       <CarouselContainer>
-        <Slider x={x} count={countOfItemToShow} onAnimationEnd={onAnimationEnd}>
+        <Slider {...{ x, onAnimationEnd, count: countOfMonth }}>
           {items.map((el) => (
-            <Item count={countOfItemToShow}>{el}</Item>
+            <Item count={countOfMonth}>{el}</Item>
           ))}
         </Slider>
       </CarouselContainer>
@@ -72,10 +72,10 @@ export default function Carousel({
 }
 
 Carousel.defaultProps = {
-  countOfItemToShow: 2,
+  countOfMonth: 2,
 };
 
-function _createItems(children: React.ReactNode) {
+function createItems(children: React.ReactNode) {
   if (!Array.isArray(children)) {
     return [children];
   }
@@ -112,16 +112,6 @@ type ControllerProps = {
   onClickHandler: (dir: Direction) => void;
 };
 
-const CarouselWarpper = styled.div`
-  width: 100%;
-  display: flex;
-`;
-
-const CarouselContainer = styled.div`
-  width: 100%;
-  /* overflow: hidden; */
-`;
-
 const moveAni = (x: number, count: number) => keyframes`
   from {
     transform: translateX(${`calc((100% / ${count}) * ${x})`});
@@ -129,6 +119,16 @@ const moveAni = (x: number, count: number) => keyframes`
   to{
     transform: translateX(${`calc((100% / ${count}) * -1)`});
   }
+`;
+
+const CarouselWarpper = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+const CarouselContainer = styled.div`
+  width: 100%;
+  overflow: hidden;
 `;
 
 const Item = styled.div<{ count: number }>`
@@ -139,7 +139,6 @@ const Item = styled.div<{ count: number }>`
 const ControllerWraaper = styled.div<{ direction: number }>`
   position: absolute;
   top: 0;
-
   ${({ direction }) =>
     direction === -1
       ? css`
@@ -160,6 +159,7 @@ const Button = styled.button`
   height: 2rem;
 
   &:hover {
-    background: tan;
+    transition: background 1s;
+    background: silver;
   }
 `;
