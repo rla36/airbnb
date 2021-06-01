@@ -1,8 +1,10 @@
-import React, { useReducer, useState } from "react";
+import { useReducer } from "react";
 import styled from "styled-components";
 import SearchForm from "./SearchForm";
 import SearchInput from "./SearchInput";
 import Calendar, { Controller } from "../../../lib/calendar/Calendar";
+import Chart from "./input/Chart";
+import Guest from "./input/Guest";
 const formReducer = (state, action) => {
   switch (action.type) {
     case "SET_TYPE":
@@ -12,7 +14,7 @@ const formReducer = (state, action) => {
     case "SET_CHECK_OUT":
       return { ...state, checkOut: action.checkOut };
     case "SET_PRICE":
-      return { ...state, price: action.price };
+      return { ...state, minPrice: action.minPrice, maxPrice: action.maxPrice };
     case "SET_GUEST":
       return { ...state, guest: action.guest };
   }
@@ -21,18 +23,19 @@ const Menu = () => {
   const [formState, dispatch] = useReducer(formReducer, {
     inputType: "none",
     checkIn: {
-      year: null,
-      month: null,
-      day: null,
+      year: 2021,
+      month: 6,
+      day: 1,
     },
     checkOut: {
-      year: null,
-      month: null,
-      day: null,
+      year: 2021,
+      month: 6,
+      day: 10,
     },
-    price: 0,
+    minPrice: 100000,
+    maxPrice: 150000,
     guest: {
-      adult: 0,
+      adult: 1,
       child: 0,
       infant: 0,
     },
@@ -96,6 +99,8 @@ const Menu = () => {
           {(inputType === "checkIn" || inputType === "checkOut") && (
             <Calendar onClickDay={onClickDay} start={checkIn} end={checkOut} />
           )}
+          {inputType === "price" && <Chart />}
+          {inputType === "guest" && <Guest />}
         </SearchInput>
       </form>
     </MenuWrapper>

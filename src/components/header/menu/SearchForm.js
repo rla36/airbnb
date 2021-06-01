@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { FORM_ITEM } from "../../../utils/constant";
+import { requestRooms } from "../../../utils/fetchFn";
 import { ReactComponent as Submit } from "../../../assets/svg/img_search.svg";
 
 const SearchForm = ({ Controller, formState, dispatch }) => {
@@ -17,7 +18,7 @@ const SearchForm = ({ Controller, formState, dispatch }) => {
       </Controller>
       {renderFormItem("price", inputType, dispatch, price)}
       {renderFormItem("guest", inputType, dispatch, guest)}
-      {renderButton(isSearch)}
+      {renderButton(isSearch, formState)}
     </SearchFormWrapper>
   );
 };
@@ -58,13 +59,37 @@ const getValue = (type, value) => {
     return total === 0 ? "" : `게스트 ${total}명`;
   }
 };
-const renderButton = (isSearch) => {
+const renderButton = (isSearch, formState) => {
+  const onClickSearch = async (e) => {
+    e.preventDefault();
+    console.log("call");
+    const { checkIn, checkOut, minPrice, maxPrice, guest } = formState;
+    const result = await requestRooms({
+      location: {
+        lat: "",
+        lng: "",
+      },
+      check: {
+        checkIn: toStringDate(checkIn),
+        checkOut: toStringDate(checkOut),
+      },
+      price: { minPrice, maxPrice },
+      guest,
+    });
+    return result;
+  };
   return (
-    <SubmitButton>
+    <SubmitButton onClick={onClickSearch}>
       <Submit fill="#E84C60" width="25" height="25" />
       {isSearch && <div>검색</div>}
     </SubmitButton>
   );
+};
+const toStringDate = (date) => {
+  const { year, month, day } = date;
+  return `${year}-${month > 9 ? month : "0" + month}-${
+    day > 9 ? day : "0" + day
+  }`;
 };
 const SubmitButton = styled.button`
   position: absolute;

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { DUMMY } from "../../utils/dummy";
 import {
-  getCloseAttracitons,
-  getThemeStayContent,
+  requestCloseAttracitons,
+  requestThemeStayContent,
   getSearchResult,
 } from "../../utils/fetchFn";
 import Footer from "./Footer.js";
@@ -19,9 +19,9 @@ const HomePage = () => {
   useEffect(() => {
     const callData = async () => {
       const { title: locationTitle, closeAttractions } =
-        await getCloseAttracitons();
+        await requestCloseAttracitons();
       const { title: themeTitle, themeStayContents } =
-        await getThemeStayContent();
+        await requestThemeStayContent();
 
       setLocation({ title: locationTitle, contents: closeAttractions });
       setTheme({ title: themeTitle, contents: themeStayContents });
