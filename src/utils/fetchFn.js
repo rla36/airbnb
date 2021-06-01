@@ -9,13 +9,13 @@ const request = (url, option = {}) => {
     .catch((err) => console.error(err));
 };
 
-export const getCloseAttracitons = async () => {
+export const requestCloseAttracitons = async () => {
   return await request("closeAttractions");
 };
-export const getThemeStayContent = async () => {
+export const requestThemeStayContent = async () => {
   return await request("themeStayContent");
 };
-export const getSearchResult = async ({ location, check, price, guest }) => {
+export const requestRooms = async ({ location, check, price, guest }) => {
   const { lat, lng } = location;
   const { checkIn, checkOut } = check;
   const { minPrice, maxPrice } = price;

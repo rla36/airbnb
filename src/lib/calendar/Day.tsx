@@ -21,7 +21,7 @@ export default function Day({
   clickTarget: ClickTargetType;
 }) {
   const { onClickDay, setClickTarget } = useCalendarMethod();
-  const { startDate, endDate, nextClickTarget } = useDatesState();
+  const { startDate, endDate } = useDatesState();
   const { lang } = useConstantState();
   const thisDate = new Date(year, month - 1, day);
   const done = Boolean(startDate && endDate);
