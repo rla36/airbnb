@@ -5,7 +5,7 @@ import SearchInput from "./SearchInput";
 import Calendar, { Controller } from "../../../lib/calendar/Calendar";
 import Chart from "./input/Chart";
 import Guest from "./input/Guest";
-import { useHeaderDispatch, useHeaderState } from "../../HeaderProvider";
+import { useHeaderState } from "../../HeaderProvider";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -18,7 +18,13 @@ const formReducer = (state, action) => {
     case "SET_PRICE":
       return { ...state, minPrice: action.minPrice, maxPrice: action.maxPrice };
     case "SET_GUEST":
-      return { ...state, guest: action.guest };
+      const key = action.key;
+      const val = action.value;
+
+      return {
+        ...state,
+        guest: { ...state.guest, [key]: state.guest[key] + val },
+      };
   }
 };
 
@@ -40,14 +46,12 @@ const initialFormState = {
     infant: 0,
   },
 };
-
 const Search = () => {
   const [formState, formDispatch] = useReducer(formReducer, initialFormState);
-  const { inputType, checkIn, checkOut } = formState;
+  const { inputType, checkIn, checkOut, minPrice, maxPrice, guest } = formState;
 
   const headerState = useHeaderState();
   const { showForm } = headerState;
-  const headerDispatch = useHeaderDispatch();
 
   const onClickDay = (result) => {
     const { nextClickTarget, startDate, endDate } = result;
@@ -95,13 +99,26 @@ const Search = () => {
             formDispatch,
           }}
         />
-        <SearchInput type="calendar">
-          {(inputType === "checkIn" || inputType === "checkOut") && (
-            <Calendar onClickDay={onClickDay} start={checkIn} end={checkOut} />
-          )}
-          {inputType === "price" && <Chart />}
-          {inputType === "guest" && <Guest />}
-        </SearchInput>
+        {inputType !== "none" && (
+          <SearchInput inputType={inputType}>
+            <div>
+              {(inputType === "checkIn" || inputType === "checkOut") && (
+                <Calendar
+                  onClickDay={onClickDay}
+                  start={checkIn}
+                  end={checkOut}
+                  lang="ko"
+                />
+              )}
+              {inputType === "price" && (
+                <Chart minPrice={minPrice} maxPrice={maxPrice} />
+              )}
+              {inputType === "guest" && (
+                <Guest guest={guest} formDispatch={formDispatch} />
+              )}
+            </div>
+          </SearchInput>
+        )}
       </form>
     </MenuWrapper>
   );

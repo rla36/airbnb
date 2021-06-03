@@ -5,6 +5,7 @@ const initialHeaderState = {
   showForm: true,
   showMiniForm: false,
   miniFormAnimationValue: "none",
+  showCorona: true,
 };
 
 const headerReducer = (state, action) => {
@@ -37,9 +38,18 @@ const headerReducer = (state, action) => {
     case "CLICK_SEARCH":
       return {
         ...state,
+        isSticky: true,
         showForm: false,
         showMiniForm: true,
+        showCorona: false,
         miniFormAnimationValue: "none",
+      };
+    case "CLICK_LOGO":
+      return {
+        ...state,
+        showCorona: true,
+        showMiniForm: false,
+        showForm: true,
       };
   }
 };

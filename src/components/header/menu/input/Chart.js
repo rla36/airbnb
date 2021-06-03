@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const Chart = () => {
+const Chart = ({ minPrice, maxPrice }) => {
   return <ChartWrapper></ChartWrapper>;
 };
 

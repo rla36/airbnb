@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import styled from "styled-components";
 import Day from "./Day";
 import { DayWrapper } from "../utils/styled";
@@ -11,15 +11,17 @@ export default function CalendarItem({
   day,
   firstDay,
   clickTarget,
+  lang,
 }: Calendar & {
   clickTarget: ClickTargetType;
+  lang: string;
 }) {
   const empty = FIRST_DAYS[firstDay];
   const days = LAST_DAYS[day];
   return (
     <CalendarItemWrapper>
       <CalendarItemYearMonth>
-        {year}년 {month}월
+        {lang === "ko" ? `${year}년 ${month}월` : `${year}.${month}`}
       </CalendarItemYearMonth>
       <CalendarItemDays>
         {empty.map((el) => (
@@ -36,7 +38,8 @@ export default function CalendarItem({
 const CalendarItemWrapper = styled.ul``;
 const CalendarItemYearMonth = styled.div`
   text-align: center;
-  margin-bottom: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3.5rem;
 `;
 
 const CalendarItemDays = styled.ul`

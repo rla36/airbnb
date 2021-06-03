@@ -109,7 +109,7 @@ function InnerCalendar({
       {renderWeeks(lang, countOfMonth)}
       <Carousel>
         {calendarList.map((calendar) => (
-          <CalendarItem {...calendar} clickTarget={clickTarget} />
+          <CalendarItem {...calendar} lang={lang} clickTarget={clickTarget} />
         ))}
       </Carousel>
     </CalendarWrapper>

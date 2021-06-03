@@ -15,29 +15,67 @@ const SearchForm = ({ Controller, formState, formDispatch }) => {
   return (
     <SearchFormWrapper>
       {renderButton(isSearch, formState, history, headerDispatch)}
-      <SearchFormContainer>
+      <SearchFormContainer isSearch={isSearch}>
         <Controller start>
-          {renderFormItem("checkIn", inputType, formDispatch, checkIn)}
+          {renderFormItem({
+            type: "checkIn",
+            isSearch,
+            setIsSearch,
+            inputType,
+            formDispatch,
+            value: checkIn,
+          })}
         </Controller>
         <Controller end>
-          {renderFormItem("checkOut", inputType, formDispatch, checkOut)}
+          {renderFormItem({
+            type: "checkOut",
+            isSearch,
+            setIsSearch,
+            inputType,
+            formDispatch,
+            value: checkOut,
+          })}
         </Controller>
-        {renderFormItem("price", inputType, formDispatch, price)}
-        {renderFormItem("guest", inputType, formDispatch, guest)}
+        {renderFormItem({
+          type: "price",
+          isSearch,
+          setIsSearch,
+          inputType,
+          formDispatch,
+          value: price,
+        })}
+        {renderFormItem({
+          type: "guest",
+          isSearch,
+          setIsSearch,
+          inputType,
+          formDispatch,
+          value: guest,
+        })}
       </SearchFormContainer>
     </SearchFormWrapper>
   );
 };
 
-const renderFormItem = (type, inputType, dispatch, value) => {
+const renderFormItem = ({
+  type,
+  isSearch,
+  setIsSearch,
+  inputType,
+  formDispatch,
+  value,
+}) => {
   const { title, placeholder, size } = FORM_ITEM[type];
   const isSelected = inputType === type;
+
   return (
     <FormItem
       flex={size}
+      isSearch={isSearch}
       isSelected={isSelected}
       onClick={() => {
-        dispatch({ type: "SET_TYPE", inputType: type });
+        setIsSearch("true");
+        formDispatch({ type: "SET_TYPE", inputType: type });
       }}
     >
       <label for={type}>
@@ -104,6 +142,9 @@ const toStringDate = (date) => {
 };
 
 const SearchFormWrapper = styled.div`
+  width: 60rem;
+  border-radius: 3rem;
+  box-shadow: 3px 0 15px #929292;
   position: relative;
 `;
 const SubmitButton = styled.button`
@@ -126,27 +167,29 @@ const SubmitButton = styled.button`
 
 const SearchFormContainer = styled.div`
   display: flex;
-  /* width: 55rem; */
   align-items: center;
-  background: white;
+  background: ${({ isSearch }) => (isSearch ? "#f6f6f6" : "white")};
   border-radius: 2rem;
   height: 4rem;
 `;
 const FormItem = styled.div`
   box-sizing: border-box;
+  background: none;
   display: flex;
   align-items: center;
   height: 100%;
   border-radius: 2rem;
+  &:hover {
+    background: #e9e9e9;
+  }
   ${({ isSelected }) =>
     isSelected &&
     css`
-      background: silver;
+      background: white;
+      box-shadow: 0 0 15px #b3b3b3;
     `}
+
   flex: ${({ flex }) => flex};
-  &:hover {
-    background: #e0e0e0;
-  }
   & > label {
     padding: 0 2rem;
   }

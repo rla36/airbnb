@@ -20,7 +20,7 @@ export const renderWeeks = (lang: string, count: number) => {
 
 const WeeksContainer = styled.div`
   position: absolute;
-  top: 1.5rem;
+  top: 3rem;
   width: 100%;
   display: flex;
   justify-content: space-around;

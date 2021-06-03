@@ -8,12 +8,10 @@ import { useHeaderDispatch, useHeaderState } from "../HeaderProvider";
 
 const Header = () => {
   const headerState = useHeaderState();
-  const { isSticky, showForm, showMiniForm, miniFormAnimationValue } =
-    headerState;
+  const { isSticky, showMiniForm, miniFormAnimationValue } = headerState;
   const headerDispatch = useHeaderDispatch();
   const onAnimationEnd = () => {
     if (isSticky && miniFormAnimationValue === "minimize") return;
-    console.log("이거 머야!");
     headerDispatch({ type: "AFTER_ANIMATION" });
   };
 
@@ -46,7 +44,13 @@ const Header = () => {
   return (
     <HeaderWrapper isSticky={isSticky}>
       <HeaderContainer>
-        <Link to="/">
+        <Link
+          to="/"
+          onClick={() => {
+            console.log("클릭댐");
+            headerDispatch({ type: "CLICK_LOGO" });
+          }}
+        >
           <Logo fill={isSticky ? "#E84C60" : "black"} />
         </Link>
         <MenuContainer isSticky={isSticky} showMin={showMiniForm}>
@@ -55,7 +59,6 @@ const Header = () => {
               ani={miniFormAnimationValue}
               onAnimationEnd={onAnimationEnd}
               onClick={() => {
-                console.log("클릭됐다 해");
                 headerDispatch({ type: "CLICK_MINIFORM" });
               }}
             >
