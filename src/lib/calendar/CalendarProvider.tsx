@@ -8,10 +8,9 @@ import React, {
 import { MESSAGE } from "../utils/constant";
 import {
   Calendar,
-  CurrentDay,
+  DateType,
   OnClickDay,
   ClickTargetType,
-  DateType,
 } from "../utils/types";
 import {
   calendarReducer,
@@ -45,12 +44,13 @@ export default function CalendarProvider({
   const [dates, datesDispatch] = useReducer(datesReducer, {
     startDate: start ? new Date(start.year, start.month - 1, start.day) : null,
     endDate: end ? new Date(end.year, end.month - 1, end.day) : null,
+    today: TODAY,
     nextClickTarget: "start",
   });
 
   const [calendar, calendarDispatch] = useReducer(calendarReducer, {
     countOfMonth,
-    currentDay: TODAY,
+    today: TODAY,
     calendarList: useMemo(() => createCalendarList(countOfMonth, TODAY), []),
   });
 
@@ -119,10 +119,7 @@ type Method = OnClickDay & {
 };
 const MethodContext = createContext<Method | null>(null);
 
-function createCalendarList(
-  countOfMonth: number,
-  today: CurrentDay
-): Calendar[] {
+function createCalendarList(countOfMonth: number, today: DateType): Calendar[] {
   const { year, month } = today;
   const result = [];
   for (let i = -1; i <= countOfMonth; i++) {
@@ -142,7 +139,11 @@ function createCalendar(year: number, month: number): Calendar {
   };
 }
 
-function getCurrentDate(): CurrentDay {
+function getCurrentDate(): DateType {
   const current = new Date();
-  return { year: current.getFullYear(), month: current.getMonth() };
+  return {
+    year: current.getFullYear(),
+    month: current.getMonth(),
+    day: current.getDate(),
+  };
 }

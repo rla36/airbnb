@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { DUMMY } from "../../utils/dummy";
+import { useLocation } from "react-router-dom";
 
 const SearchResult = () => {
-  const { SEARCH_LIST } = DUMMY;
-  const { stayCount, stays } = SEARCH_LIST;
-  console.log(stays);
+  const location = useLocation();
+  const { stayCount, stays } = location.state;
   return (
     <SearchResultWrapper>
       {renderOption(stayCount)}
@@ -26,7 +25,8 @@ const renderOption = (stayCount) => {
 };
 const renderResultItem = (stays) => {
   const {
-    imgURL,
+    id,
+    imageURL,
     location,
     category,
     title,
@@ -36,10 +36,9 @@ const renderResultItem = (stays) => {
     rating,
     reviewCount,
   } = stays;
-  console.log(option);
   return (
-    <ItemContainer>
-      <ItemImage URL={imgURL} />
+    <ItemContainer key={id}>
+      <ItemImage URL={imageURL} />
       <ItemContent>
         <ContentTop>
           <ItemLocation>
@@ -68,9 +67,9 @@ const renderResultItem = (stays) => {
   );
 };
 const renderItemOption = (option) => {
-  const { maxGuestCount, roomType, bedCount, bathroomCount } = option;
+  const { id, maxGuestCount, roomType, bedCount, bathroomCount } = option;
   return (
-    <ItemOption>
+    <ItemOption key={id}>
       <li>최대인원 {maxGuestCount}명</li>
       <li>{roomType}</li>
       <li>침대 {bedCount}개</li>

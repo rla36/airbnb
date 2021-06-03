@@ -9,7 +9,7 @@ import {
 import Footer from "./Footer.js";
 import Location from "./Location";
 import Thema from "./Thema";
-const HomePage = () => {
+const HomePage = ({ history }) => {
   const [location, setLocation] = useState({
     title: "",
     contents: [],

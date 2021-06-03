@@ -11,11 +11,6 @@ export type Calendar = {
   firstDay: number;
 };
 
-export type CurrentDay = {
-  year: number;
-  month: number;
-};
-
 export type _OnClickResult = {
   clickedType: ClickTargetType;
   nextClickTarget: ClickTargetType;

@@ -1,10 +1,11 @@
-import { ClickTargetType, Calendar, CurrentDay } from "../utils/types";
+import { ClickTargetType, Calendar, DateType } from "../utils/types";
 import { MESSAGE } from "../utils/constant";
 
 export type DatesState = {
   startDate: Date | null;
   endDate: Date | null;
   nextClickTarget: ClickTargetType;
+  today: DateType;
 };
 
 export type DatesAction =
@@ -44,12 +45,14 @@ export function datesReducer(
       };
     case "CASE_SET_START_CLEAR_END":
       return {
+        ...state,
         startDate: action.startDate,
         endDate: null,
         nextClickTarget: action.nextClickTarget,
       };
     case "CASE_CLEAR_BOTH":
       return {
+        ...state,
         startDate: null,
         endDate: null,
         nextClickTarget: action.nextClickTarget,
@@ -61,7 +64,7 @@ export function datesReducer(
 
 export type CalendarState = {
   countOfMonth: number;
-  currentDay: CurrentDay;
+  today: DateType;
   calendarList: Calendar[];
 };
 
@@ -71,8 +74,8 @@ export function calendarReducer(
   state: CalendarState,
   action: CalendarAction
 ): CalendarState {
-  const { countOfMonth, calendarList, currentDay } = state;
-  const { year, month } = currentDay;
+  const { countOfMonth, calendarList, today } = state;
+  const { year, month } = today;
   const newCalendarList = calendarList.slice();
 
   switch (action.type) {
@@ -83,7 +86,7 @@ export function calendarReducer(
       return {
         ...state,
         calendarList: newCalendarList,
-        currentDay: getDate(year, month - 1),
+        today: getDate(year, month - 1),
       };
     case "MOVE_RIGHT":
       newCalendarList.shift();
@@ -92,14 +95,18 @@ export function calendarReducer(
       return {
         ...state,
         calendarList: newCalendarList,
-        currentDay: getDate(year, month + 1),
+        today: getDate(year, month + 1),
       };
   }
 }
 
 function getDate(year: number, month: number) {
   const date = new Date(year, month);
-  return { year: date.getFullYear(), month: date.getMonth() };
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth(),
+    day: date.getDate(),
+  };
 }
 
 function createCalendar(year: number, month: number): Calendar {

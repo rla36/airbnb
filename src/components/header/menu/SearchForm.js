@@ -3,22 +3,28 @@ import styled, { css } from "styled-components";
 import { FORM_ITEM } from "../../../utils/constant";
 import { requestRooms } from "../../../utils/fetchFn";
 import { ReactComponent as Submit } from "../../../assets/svg/img_search.svg";
+import { useHistory } from "react-router-dom";
+import { useHeaderDispatch } from "../../HeaderProvider";
 
-const SearchForm = ({ Controller, formState, dispatch }) => {
-  const [isSearch, setIsSearch] = useState(true);
+const SearchForm = ({ Controller, formState, formDispatch }) => {
+  const history = useHistory();
+  const [isSearch, setIsSearch] = useState(false);
   const { inputType, checkIn, checkOut, price, guest } = formState;
+  const headerDispatch = useHeaderDispatch();
+
   return (
     <SearchFormWrapper>
-      <Controller start>
-        {renderFormItem("checkIn", inputType, dispatch, checkIn)}
-      </Controller>
-      <Controller end>
-        {" "}
-        {renderFormItem("checkOut", inputType, dispatch, checkOut)}
-      </Controller>
-      {renderFormItem("price", inputType, dispatch, price)}
-      {renderFormItem("guest", inputType, dispatch, guest)}
-      {renderButton(isSearch, formState)}
+      {renderButton(isSearch, formState, history, headerDispatch)}
+      <SearchFormContainer>
+        <Controller start>
+          {renderFormItem("checkIn", inputType, formDispatch, checkIn)}
+        </Controller>
+        <Controller end>
+          {renderFormItem("checkOut", inputType, formDispatch, checkOut)}
+        </Controller>
+        {renderFormItem("price", inputType, formDispatch, price)}
+        {renderFormItem("guest", inputType, formDispatch, guest)}
+      </SearchFormContainer>
     </SearchFormWrapper>
   );
 };
@@ -46,6 +52,7 @@ const renderFormItem = (type, inputType, dispatch, value) => {
     </FormItem>
   );
 };
+
 const getValue = (type, value) => {
   if (type === "checkIn" || type === "checkOut") {
     if (!value.year) return "";
@@ -59,10 +66,9 @@ const getValue = (type, value) => {
     return total === 0 ? "" : `게스트 ${total}명`;
   }
 };
-const renderButton = (isSearch, formState) => {
+const renderButton = (isSearch, formState, history, headerDispatch) => {
   const onClickSearch = async (e) => {
     e.preventDefault();
-    console.log("call");
     const { checkIn, checkOut, minPrice, maxPrice, guest } = formState;
     const result = await requestRooms({
       location: {
@@ -76,11 +82,16 @@ const renderButton = (isSearch, formState) => {
       price: { minPrice, maxPrice },
       guest,
     });
-    return result;
+    if (!result) return;
+    headerDispatch({ type: "CLICK_SEARCH" });
+    history.push({
+      pathname: "/search",
+      state: result,
+    });
   };
   return (
     <SubmitButton onClick={onClickSearch}>
-      <Submit fill="#E84C60" width="25" height="25" />
+      <Submit width="25" height="25" />
       {isSearch && <div>검색</div>}
     </SubmitButton>
   );
@@ -91,9 +102,15 @@ const toStringDate = (date) => {
     day > 9 ? day : "0" + day
   }`;
 };
+
+const SearchFormWrapper = styled.div`
+  position: relative;
+`;
 const SubmitButton = styled.button`
   position: absolute;
   right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   background: #e84c60;
   border-radius: 3rem;
   display: flex;
@@ -106,15 +123,14 @@ const SubmitButton = styled.button`
     font-weight: bold;
   }
 `;
-const SearchFormWrapper = styled.div`
-  position: relative;
-  width: 55rem;
+
+const SearchFormContainer = styled.div`
   display: flex;
+  /* width: 55rem; */
   align-items: center;
   background: white;
   border-radius: 2rem;
   height: 4rem;
-  margin-top: 3rem;
 `;
 const FormItem = styled.div`
   box-sizing: border-box;

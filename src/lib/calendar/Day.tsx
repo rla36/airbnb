@@ -8,7 +8,12 @@ import {
 } from "./CalendarProvider";
 import { DatesAction } from "./CalendarReducer";
 import { DAYS, MESSAGE } from "../utils/constant";
-import { Calendar, ClickTargetType, OnClickDay } from "../utils/types";
+import {
+  Calendar,
+  ClickTargetType,
+  DateType,
+  OnClickDay,
+} from "../utils/types";
 import { DayWrapper } from "../utils/styled";
 
 export default function Day({
@@ -21,12 +26,13 @@ export default function Day({
   clickTarget: ClickTargetType;
 }) {
   const { onClickDay, setClickTarget } = useCalendarMethod();
-  const { startDate, endDate } = useDatesState();
+  const { startDate, endDate, today } = useDatesState();
   const { lang } = useConstantState();
   const thisDate = new Date(year, month - 1, day);
+  const isToday = getIsToday(year, month, day, today);
   const done = Boolean(startDate && endDate);
   const dispatch = useDatesDispatch();
-  const typeOfDay = getTypeOfDay(startDate, endDate, thisDate);
+  const typeOfDay = getTypeOfDay(startDate, endDate, thisDate, isToday);
 
   return (
     <DayWrapper typeOfDay={typeOfDay} done={done}>
@@ -63,9 +69,10 @@ export default function Day({
 function getTypeOfDay(
   startDate: Date | null,
   endDate: Date | null,
-  thisDate: Date
+  thisDate: Date,
+  isToday: boolean
 ) {
-  if (thisDate < new Date()) {
+  if (thisDate < new Date() && !isToday) {
     return "passed";
   }
   if (startDate && thisDate.getTime() === startDate.getTime()) return "start";
@@ -255,6 +262,12 @@ function convertDate(date: Date | null) {
     month: date.getMonth() + 1,
     day: date.getDate(),
   };
+}
+function getIsToday(year: number, month: number, day: number, today: DateType) {
+  if (year !== today.year) return false;
+  if (month - 1 !== today.month) return false;
+  if (day !== today.day) return false;
+  return true;
 }
 const DayCircle = styled.div`
   position: absolute;

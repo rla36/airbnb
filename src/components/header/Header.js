@@ -1,27 +1,102 @@
-import Menu from "./menu/Menu";
-import React from "react";
-import styled from "styled-components";
+import Search from "./menu/Search";
+import styled, { css, keyframes } from "styled-components";
 import MyPage from "./MyPage";
-
+import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../../assets/svg/img_logo.svg";
+import { ReactComponent as Submit } from "../../assets/svg/img_search.svg";
+import { useHeaderDispatch, useHeaderState } from "../HeaderProvider";
+
 const Header = () => {
+  const headerState = useHeaderState();
+  const { isSticky, showForm, showMiniForm, miniFormAnimationValue } =
+    headerState;
+  const headerDispatch = useHeaderDispatch();
+  const onAnimationEnd = () => {
+    if (isSticky && miniFormAnimationValue === "minimize") return;
+    console.log("이거 머야!");
+    headerDispatch({ type: "AFTER_ANIMATION" });
+  };
+
+  const Minimized = styled.div`
+    cursor: pointer;
+    box-shadow: 0 0 5px #bdbdbd;
+    width: 20rem;
+    height: 3rem;
+    border-radius: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 1rem;
+    padding-right: 0.5rem;
+    transition: box-shadow 0.5s;
+    ${({ ani }) =>
+      ani === "minimize"
+        ? css`
+            animation: ${minimize} 0.2s forwards;
+          `
+        : ani === "maximize"
+        ? css`
+            animation: ${minimize} 0.2s forwards reverse;
+          `
+        : ""}
+    &:hover {
+      box-shadow: 0 0 10px #a1a1a1;
+    }
+  `;
   return (
-    <HeaderWrapper>
+    <HeaderWrapper isSticky={isSticky}>
       <HeaderContainer>
-        <Logo fill="black" />
-        <MenuContainer>
-          <Menu />
+        <Link to="/">
+          <Logo fill={isSticky ? "#E84C60" : "black"} />
+        </Link>
+        <MenuContainer isSticky={isSticky} showMin={showMiniForm}>
+          {showMiniForm && (
+            <Minimized
+              ani={miniFormAnimationValue}
+              onAnimationEnd={onAnimationEnd}
+              onClick={() => {
+                console.log("클릭됐다 해");
+                headerDispatch({ type: "CLICK_MINIFORM" });
+              }}
+            >
+              <p>검색 시작하기</p>
+              <SubmitDIV>
+                <Submit fill="#E84C60" width="15" height="15" />
+              </SubmitDIV>
+            </Minimized>
+          )}
+          <Search />
         </MenuContainer>
         <MyPage />
       </HeaderContainer>
     </HeaderWrapper>
   );
 };
+const minimize = () => keyframes`
+  from {
+    margin-top: 5rem;
+    width: 80%;
+    height: 4rem;
+    border-radius: 2rem;
+  }
+  to {
+    margin-top: 0;
+    width: 30%;
+    height: 3rem;
+    border-radius: 1.5rem;
+  }
+`;
 
 const HeaderWrapper = styled.div`
-  position: fixed;
+  position: ${({ isSticky }) => (isSticky ? "fixed" : "absolute")};
   top: 0;
   width: 100%;
+  transition: all 0.3s;
+  ${({ isSticky }) =>
+    isSticky &&
+    css`
+      background: white;
+    `}
 `;
 const HeaderContainer = styled.div`
   width: 80%;
@@ -39,6 +114,18 @@ const MenuContainer = styled.div`
   display: flex;
   justify-content: center;
   height: 1rem;
+  align-items: ${({ showMin }) => (showMin ? "center" : "normal")};
+
+  ${({ isSticky }) =>
+    isSticky &&
+    css`
+      width: 80%;
+    `};
+`;
+const SubmitDIV = styled.div`
+  background: #e84c60;
+  border-radius: 1rem;
+  padding: 0.5rem;
 `;
 
 export default Header;
