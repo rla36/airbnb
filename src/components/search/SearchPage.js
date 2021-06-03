@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Map from "./Map";
 import SearchResult from "./SearchResult";
 
 const SearchPage = () => {
@@ -24,7 +25,4 @@ const SearchPageWrapper = styled.div`
   }
 `;
 
-const Map = styled.div`
-  background: tan;
-`;
 export default SearchPage;

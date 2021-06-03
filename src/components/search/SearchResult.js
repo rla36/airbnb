@@ -5,8 +5,8 @@ import { useLocation } from "react-router-dom";
 const SearchResult = () => {
   const location = useLocation();
   const { result, formState } = location.state;
-  console.log(result, formState);
   const { stayCount, stays } = result;
+  console.log(stays);
   return (
     <SearchResultWrapper>
       {renderOption(stayCount, formState)}
