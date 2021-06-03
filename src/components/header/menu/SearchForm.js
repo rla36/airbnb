@@ -9,7 +9,7 @@ import { useHeaderDispatch } from "../../HeaderProvider";
 const SearchForm = ({ Controller, formState, formDispatch }) => {
   const history = useHistory();
   const [isSearch, setIsSearch] = useState(false);
-  const { inputType, checkIn, checkOut, price, guest } = formState;
+  const { inputType, checkIn, checkOut, minPrice, maxPrice, guest } = formState;
   const headerDispatch = useHeaderDispatch();
 
   return (
@@ -42,7 +42,7 @@ const SearchForm = ({ Controller, formState, formDispatch }) => {
           setIsSearch,
           inputType,
           formDispatch,
-          value: price,
+          value: { minPrice, maxPrice },
         })}
         {renderFormItem({
           type: "guest",
@@ -97,7 +97,8 @@ const getValue = (type, value) => {
     const { month, day } = value;
     return `${month}월 ${day}일`;
   } else if (type === "price") {
-    return value === 0 ? "" : value;
+    const { minPrice, maxPrice } = value;
+    return `${minPrice} ~ ${maxPrice}`;
   } else if (type === "guest") {
     const { adult, child, infant } = value;
     const total = adult + child + infant;
@@ -124,7 +125,7 @@ const renderButton = (isSearch, formState, history, headerDispatch) => {
     headerDispatch({ type: "CLICK_SEARCH" });
     history.push({
       pathname: "/search",
-      state: result,
+      state: { result, formState },
     });
   };
   return (

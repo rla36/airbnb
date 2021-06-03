@@ -4,24 +4,36 @@ import { useLocation } from "react-router-dom";
 
 const SearchResult = () => {
   const location = useLocation();
-  const { stayCount, stays } = location.state;
+  const { result, formState } = location.state;
+  console.log(result, formState);
+  const { stayCount, stays } = result;
   return (
     <SearchResultWrapper>
-      {renderOption(stayCount)}
+      {renderOption(stayCount, formState)}
       <h2>지도에서 선택한 지역의 숙소</h2>
       <ResultList>{stays.map(renderResultItem)}</ResultList>
     </SearchResultWrapper>
   );
 };
-const renderOption = (stayCount) => {
+const renderOption = (stayCount, formState) => {
+  const { checkIn, checkOut, minPrice, maxPrice, guest } = formState;
   return (
     <Option>
       <OptionItem>{stayCount}개 이상의 숙소</OptionItem>
-      <OptionItem>5월12일 - 5월 18일</OptionItem>
-      <OptionItem>100,000 - 1,000,000</OptionItem>
-      <OptionItem>게스트 3명</OptionItem>
+      <OptionItem>{convertDay(checkIn, checkOut)}</OptionItem>
+      <OptionItem>
+        {minPrice} - {maxPrice}
+      </OptionItem>
+      <OptionItem>게스트 {getGuestCount(guest)}명</OptionItem>
     </Option>
   );
+};
+const convertDay = (startDate, endDate) => {
+  return `${startDate.month}월${startDate.day}일 - ${endDate.month}월${endDate.day}일`;
+};
+const getGuestCount = (guest) => {
+  const values = Object.values(guest);
+  return values.reduce((acc, curr) => acc + curr, 0);
 };
 const renderResultItem = (stays) => {
   const {

@@ -47,7 +47,6 @@ const Header = () => {
         <Link
           to="/"
           onClick={() => {
-            console.log("클릭댐");
             headerDispatch({ type: "CLICK_LOGO" });
           }}
         >

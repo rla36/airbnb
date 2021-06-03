@@ -41,7 +41,7 @@ const initialFormState = {
   minPrice: 100000,
   maxPrice: 150000,
   guest: {
-    adult: 1,
+    adult: 0,
     child: 0,
     infant: 0,
   },
